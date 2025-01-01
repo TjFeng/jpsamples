@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <USER_LID>%(CLIENT_LID)</USER_LID>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)..\build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\build\Intermediate\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Command>xcopy $(ProjectDir)*.h $(TargetDir)..\..\include\$(ProjectName)\*.h  /DY</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Message>Update include folder</Message>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;.\include;.\GeneratedFiles;$(TargetDir)..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(TargetDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <BuildLog />
+    <QtMoc />
+    <QtRcc />
+    <QtUic />
+    <PostBuildEvent>
+      <Command>xcopy $(ProjectDir)include\*.h $(TargetDir)..\..\include\$(ProjectName)\*.h  /DY</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Update includes</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="USER_LID">
+      <Value>$(USER_LID)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+  <Target Name="CleanHeaderFiles" Condition="Exists('copy.bat')" AfterTargets="Clean">
+    <Exec Command="call copy.bat clean $(Configuration) $(Platform) $(ProjectName) $(ProjectDir) $(TargetDir)" />
+    <Message Text="Cleaning header files" Importance="High" />
+  </Target>
+  <Target Name="UpdateHeaderFiles" Condition="Exists('copy.bat')" AfterTargets="PostBuildEvent">
+    <Exec Command="call copy.bat build $(Configuration) $(Platform) $(ProjectName) $(ProjectDir) $(TargetDir)" />
+    <Message Text="Update header files" Importance="High" />
+  </Target>
+</Project>
