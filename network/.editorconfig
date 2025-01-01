@@ -1,0 +1,17 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+
+root = true
+
+# All files
+[*]
+indent_style = space
+
+# C++ files
+[*.{h,cpp}]
+indent_size = 4
+insert_final_newline = true
+charset = utf-8-bom
+
+# Xml files
+# [*.xml]
+# indent_size = 2
